@@ -19,7 +19,14 @@
 
     <util:properties id="hibernateProperties" location="classpath:hibernate.properties"/>
 
-    <!-- This is the key to enable Spring injection in custom validator beans!! -->
+    <!-- The LocalValidatorFactoryBean is able to instantiate custom validators and inject autowired dependencies. -->
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <!--
+       This is the key to link Spring's injection to Hibernate event-based validation.
+       Notice the first constructor argument, this is our Spring ValidatorFactory instance.
+      -->
     <bean id="beanValidationEventListener" class="org.hibernate.cfg.beanvalidation.BeanValidationEventListener">
         <constructor-arg ref="validator"/>
         <constructor-arg ref="hibernateProperties"/>
@@ -32,8 +39,12 @@
                 <value>com.github.davidmarquis.model.User</value>
             </list>
         </property>
-        <!--<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>-->
         <property name="hibernateProperties" ref="hibernateProperties"/>
+
+        <!--
+          A reference to our custom BeanValidationEventListener instance is pushed for all events.
+          This can of course be customized if you only need a specific event to trigger validations.
+        -->
         <property name="eventListeners">
             <map>
                 <entry key="pre-update" value-ref="beanValidationEventListener"/>
@@ -42,9 +53,6 @@
             </map>
         </property>
     </bean>
-
-    <bean id="validator"
-          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <bean id="injectableBean" class="com.github.davidmarquis.InjectableBean"/>
 
