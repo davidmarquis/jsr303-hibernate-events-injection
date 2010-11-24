@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:file:target/testdb"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <util:properties id="hibernateProperties" location="classpath:hibernate.properties"/>
+
+    <!-- This is the key to enable Spring injection in custom validator beans!! -->
+    <bean id="beanValidationEventListener" class="org.hibernate.cfg.beanvalidation.BeanValidationEventListener">
+        <constructor-arg ref="validator"/>
+        <constructor-arg ref="hibernateProperties"/>
+    </bean>
+
+    <bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="myDataSource"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.github.davidmarquis.model.User</value>
+            </list>
+        </property>
+        <!--<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>-->
+        <property name="hibernateProperties" ref="hibernateProperties"/>
+        <property name="eventListeners">
+            <map>
+                <entry key="pre-update" value-ref="beanValidationEventListener"/>
+                <entry key="pre-insert" value-ref="beanValidationEventListener"/>
+                <entry key="pre-delete" value-ref="beanValidationEventListener"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean id="injectableBean" class="com.github.davidmarquis.InjectableBean"/>
+
+</beans>
