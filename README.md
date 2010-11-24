@@ -17,7 +17,7 @@ This project defines:
 * A custom validator (`com.github.davidmarquis.model.validation.CustomValidationValidator`) that
 has an `@Autowired` bean injected.
 * A User model (`com.github.davidmarquis.model.User`) that uses this custom validation rule on the `email` field.
-* A JUnit test case that simply tries to save a User instance on a new Hibernate session. This triggers our custom validators, and this validator has its dependency autowired by Spring. Great!
+* A JUnit test case that simply tries to save a User instance on a new Hibernate session. This triggers Hibernate's pre-insert event which, in turn, instantiates and triggers our custom validator, with autowired dependencies injected. Great success!
 * Everything is wrapped up together in `src/main/resources/applicationContext.xml`.
 
 Run `maven test` in the project root to see this in action.
