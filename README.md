@@ -3,9 +3,10 @@ validation.
 
 The reference [Hibernate Validator documentation](http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html/validator-checkconstraints.html#validator-checkconstraints-orm-hibernateevent)
 states that it is possible to configure Hibernate to validate beans before three events:
-1. Before saving (pre-insert)
-1. Before updating (pre-update)
-1. Before deleting (pre-update)
+
+* Before saving (pre-insert)
+* Before updating (pre-update)
+* Before deleting (pre-update)
 
 Although this is convenient for simple validators, more complex custom validators might require that you
 inject references to beans managed by your Spring context. The example presented in Hibernate Validator's
