@@ -10,10 +10,13 @@ states that it is possible to configure Hibernate to validate beans before three
 
 Although this is convenient for simple validators, more complex custom validators might require that you
 inject references to beans managed by your Spring context. The example presented in Hibernate Validator's
-documentation doesn't mention this possibility, and doing so must not be immediately obvious.
+documentation doesn't mention this possibility. Although it is possible to do it, the exact way may not be immediately obvious.
 
-This project defines a custom validator (`com.github.davidmarquis.model.validation.CustomValidationValidator`) that
-has an `@Autowired` bean injected. The User model (`com.github.davidmarquis.model.User`) uses this custom validation rule on the `email` field.
-Everything is wrapped up together in `src/main/resources/applicationContext.xml`.
+This project defines:
+
+* A custom validator (`com.github.davidmarquis.model.validation.CustomValidationValidator`) that
+has an `@Autowired` bean injected.
+* A User model (`com.github.davidmarquis.model.User`) that uses this custom validation rule on the `email` field.
+* Everything is wrapped up together in `src/main/resources/applicationContext.xml`.
 
 Run `maven test` in the project root to see this in action.
